@@ -6,6 +6,7 @@ import AuthModal from './components/AuthModal';
 import SkillPaths from './components/SkillPaths';
 import UserProfile from './components/UserProfile';
 import Footer from './components/Footer';
+import PaymentModal from './components/PaymentModal';
 
 const FEATURED_EVENTS = [
   {
@@ -25,7 +26,9 @@ const FEATURED_EVENTS = [
     tags: ["AI", "UX", "Book Club"],
     description: "Join our weekly discussions exploring the intersection of AI and UX design. We analyze cutting-edge research, share insights, and discuss practical applications of AI in user experience design.",
     imageUrl: "https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-    requiresAuth: true
+    requiresAuth: true,
+    price: 100,
+    meetingLink: "https://meet.google.com/bed-xapu-fve"
   },
   {
     title: "Web3 Book Club",
@@ -34,12 +37,15 @@ const FEATURED_EVENTS = [
     tags: ["Web3", "Blockchain", "Book Club"],
     description: "A weekly gathering of Web3 enthusiasts discussing the latest developments in blockchain technology, DeFi, and decentralized applications. From technical deep-dives to user experience analysis.",
     imageUrl: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-    requiresAuth: true
+    requiresAuth: true,
+    price: 100,
+    meetingLink: "https://meet.google.com/bed-xapu-fve"
   }
 ];
 
-function App() {
+export default function App() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [pendingEventIndex, setPendingEventIndex] = useState<number | null>(null);
   const [registeredEvents, setRegisteredEvents] = useState<number[]>([]);
@@ -58,7 +64,15 @@ function App() {
       return;
     }
 
-    setRegisteredEvents(prev => [...prev, index]);
+    if (event.price && !registeredEvents.includes(index)) {
+      setPendingEventIndex(index);
+      setIsPaymentModalOpen(true);
+      return;
+    }
+
+    if (event.meetingLink && registeredEvents.includes(index)) {
+      window.open(event.meetingLink, '_blank');
+    }
   };
 
   const handleAuthSuccess = () => {
@@ -67,6 +81,13 @@ function App() {
     
     if (pendingEventIndex !== null) {
       handleEventRegistration(pendingEventIndex);
+    }
+  };
+
+  const handlePaymentSuccess = () => {
+    if (pendingEventIndex !== null) {
+      setRegisteredEvents(prev => [...prev, pendingEventIndex]);
+      setIsPaymentModalOpen(false);
       setPendingEventIndex(null);
     }
   };
@@ -123,9 +144,20 @@ function App() {
         onSuccess={handleAuthSuccess}
       />
 
+      {pendingEventIndex !== null && (
+        <PaymentModal
+          isOpen={isPaymentModalOpen}
+          onClose={() => {
+            setIsPaymentModalOpen(false);
+            setPendingEventIndex(null);
+          }}
+          onSuccess={handlePaymentSuccess}
+          price={FEATURED_EVENTS[pendingEventIndex].price || 0}
+          title={FEATURED_EVENTS[pendingEventIndex].title}
+        />
+      )}
+
       <Footer />
     </div>
   );
 }
-
-export default App;

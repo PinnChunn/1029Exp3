@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { Calendar, Clock, ChevronDown, Tag, Users, ExternalLink, Check } from 'lucide-react';
+import { Calendar, Clock, ChevronDown, Tag, Users, ExternalLink, Check, Video, Coins } from 'lucide-react';
 
 interface EventCardProps {
   title: string;
@@ -13,6 +13,8 @@ interface EventCardProps {
   externalLink?: string;
   isAuthenticated?: boolean;
   isRegistered?: boolean;
+  price?: number;
+  meetingLink?: string;
 }
 
 export default function EventCard({
@@ -26,7 +28,9 @@ export default function EventCard({
   requiresAuth,
   externalLink,
   isAuthenticated,
-  isRegistered
+  isRegistered,
+  price,
+  meetingLink
 }: EventCardProps) {
   const [isExpanded, setIsExpanded] = React.useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -48,6 +52,15 @@ export default function EventCard({
   }, [isExpanded]);
 
   const getButtonConfig = () => {
+    if (isRegistered && meetingLink) {
+      return {
+        text: 'Join Meeting',
+        icon: Video,
+        className: 'bg-green-600 hover:bg-green-700 text-white',
+        disabled: false
+      };
+    }
+
     if (isRegistered) {
       return {
         text: 'Registered',
@@ -90,7 +103,7 @@ export default function EventCard({
       <div className={`bg-white rounded-xl shadow-lg transition-all duration-300 flex flex-col h-full ${
         isExpanded ? 'ring-1 ring-purple-100 shadow-xl' : 'hover:shadow-xl hover:-translate-y-1'
       }`}>
-        {/* Image Container - Fixed height */}
+        {/* Image Container */}
         <div className="relative h-48 overflow-hidden group rounded-t-xl">
           <img 
             src={imageUrl} 
@@ -100,7 +113,7 @@ export default function EventCard({
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         </div>
 
-        {/* Content Container - Flex grow to fill space */}
+        {/* Content Container */}
         <div className="flex flex-col flex-grow p-6">
           {/* Tags */}
           <div className="flex flex-wrap gap-2 mb-4">
@@ -120,22 +133,31 @@ export default function EventCard({
             {title}
           </h3>
           
-          {/* Date and Time */}
-          <div className="flex items-center gap-4 text-gray-600 mb-4">
-            <div className="flex items-center gap-1.5">
-              <Calendar className="w-4 h-4 text-indigo-600" />
-              <span className="text-sm">{date}</span>
+          {/* Event Info */}
+          <div className="space-y-2 mb-4">
+            <div className="flex items-center gap-4 text-gray-600">
+              <div className="flex items-center gap-1.5">
+                <Calendar className="w-4 h-4 text-indigo-600" />
+                <span className="text-sm">{date}</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Clock className="w-4 h-4 text-indigo-600" />
+                <span className="text-sm">{time}</span>
+              </div>
             </div>
-            <div className="flex items-center gap-1.5">
-              <Clock className="w-4 h-4 text-indigo-600" />
-              <span className="text-sm">{time}</span>
-            </div>
+            {price && (
+              <div className="flex items-center gap-1.5">
+                <Coins className="w-4 h-4 text-indigo-600" />
+                <span className="text-sm font-medium">{price} EX3</span>
+                <span className="text-xs text-gray-500">≈ $10.00</span>
+              </div>
+            )}
           </div>
 
-          {/* Spacer to push buttons to bottom */}
+          {/* Spacer */}
           <div className="flex-grow" />
 
-          {/* Button Container - Fixed at bottom */}
+          {/* Button Container */}
           <div className="flex items-center justify-between gap-4 pt-4 border-t border-gray-100 mt-auto">
             <button
               onClick={() => setIsExpanded(!isExpanded)}
