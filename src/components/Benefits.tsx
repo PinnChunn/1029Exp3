@@ -1,25 +1,25 @@
 import React from 'react';
-import { Shield, BookOpen, DoorOpen } from 'lucide-react';
+import { Shield, BookOpen, Library } from 'lucide-react';
 
 const benefits = [
   {
-    title: 'Verifiable Achievements',
-    description: 'Secure your achievements on-chain with tamper-proof verification',
+    title: 'Record Every Step',
+    description: 'Transform your learning journey into verifiable achievements. Each workshop, seminar, and project becomes a permanent part of your professional story.',
     icon: Shield,
     gradient: 'from-purple-600 to-indigo-600',
     animation: 'animate-float'
   },
   {
-    title: 'Build Your Portfolio',
-    description: 'Track your progress and showcase your growing expertise',
+    title: 'Connect the Dots',
+    description: 'Build a comprehensive portfolio that showcases your growth. Link different skills and experiences to demonstrate your unique professional narrative.',
     icon: BookOpen,
     gradient: 'from-indigo-600 to-blue-600',
     animation: 'animate-progress'
   },
   {
-    title: 'Future Opportunities',
-    description: 'Unlock new possibilities with verified credentials',
-    icon: DoorOpen,
+    title: 'Stay Current',
+    description: 'Keep your skills sharp and relevant. Access cutting-edge workshops and earn credentials that reflect your engagement with the latest industry trends.',
+    icon: Library,
     gradient: 'from-blue-600 to-cyan-600',
     animation: 'animate-door'
   }
@@ -42,22 +42,24 @@ export default function Benefits() {
           {benefits.map((benefit, index) => (
             <div 
               key={index}
-              className="relative group"
+              className="relative group h-full"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-purple-100 to-indigo-100 rounded-2xl transform group-hover:scale-105 transition-transform duration-500 opacity-0 group-hover:opacity-100" />
               
-              <div className="relative bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1">
+              <div className="relative bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1 h-full flex flex-col">
                 <div className={`w-16 h-16 mb-6 rounded-xl bg-gradient-to-r ${benefit.gradient} p-4 text-white shadow-lg ${benefit.animation}`}>
                   <benefit.icon className="w-full h-full" />
                 </div>
                 
-                <h3 className="text-xl font-bold mb-4 bg-gradient-to-r from-gray-800 to-gray-900 bg-clip-text text-transparent">
+                <h3 className="text-xl font-bold mb-4 bg-gradient-to-r from-gray-800 to-gray-900 bg-clip-text text-transparent min-h-[2rem] flex items-center">
                   {benefit.title}
                 </h3>
                 
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-gray-600 leading-relaxed flex-grow">
                   {benefit.description}
                 </p>
+
+                <div className="h-1 w-20 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-full mt-6 transform origin-left transition-all duration-500 group-hover:w-full" />
               </div>
             </div>
           ))}
